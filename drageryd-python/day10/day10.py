@@ -1,7 +1,7 @@
 import  sys
 
 data = sys.stdin.read().strip()
-dasta = """[({(<(())[]>[[{[]{<()<>>
+sdata = """[({(<(())[]>[[{[]{<()<>>
 [(()[<>])]({[<{<<[]>>(
 {([(<{}[<>[]}>{[]{[(<()>
 (((({<>}<{<{<>}{[]{[]{}
@@ -33,15 +33,15 @@ def parse(line):
     #print(line, len(line))
     if len(line) < 2:
         #print("invalid")
-        if line[0] in scores:
+        if line and line[0] in scores:
             return 0, scores[line[0]], ""
         else:
             #print("incomplete")
-            return 0, 0, ""
+            return 0, 0, line[0]
     # Get opening
     o = line[0]
     #print(o)
-    # Peek at next
+    # Peek at next 
     if line[1] == m[o]:
         # Bracket closing
         #print(line[1])
@@ -54,7 +54,7 @@ def parse(line):
             y += x
             #print(y)
             if y >= len(line):
-                #print("incomplete")
+                #print("incomplete2", o + l)
                 return y + 1, 0, o + l
             #print(y)
             if line[y] == m[o]:
@@ -72,7 +72,7 @@ def parse(line):
         #print(s)
         #if not l:
         #    print(l)
-        return 0, s, l
+        return 0, s, o + l
 
 #parse("[]")
 #parse("([])")
@@ -89,29 +89,55 @@ def parse(line):
 #print(parse("{[([{[[[{({<<[<>[]]<()[]>>(<[]<>>({}))><{[{}()]{<>{}}}<<{}{}>{{}[]}>>}<<{{<>()}<()()>}<[(){}]<[]{"))
 
 # Part 1
-
+"""
 score = 0
 for line in lines:
     o, s, l = parse(line)
     score += s
 print(score)
-
+"""
 
 
 #print(parse("[({(<(())[]>[[{[]{<()<>>"))
-print(parse("[(()[<>])]({[<{<<[]>>("))
+
+def p2(line):
+    o, s, l = parse(line)
+    if s:
+        return ""
+    #print(o, s, l)
+    #print(o, s, l)
+    while o and o < len(line):
+        line = line[o:]
+        #print(line)
+        o, s, l = parse(line)
+    return l
 #print(parse("(((({<>}<{<{<>}{[]{[]{}"))
-print(parse("{<[[]]>}<{[{[{[]{()[[[]"))
+#print(parse("{<[[]]>}<{[{[{[]{()[[[]"))
 #print(parse("<{([{{}}[<[[[<>{}]]]>[]]"))
 
+scores = {
+    ")": 1,
+    "]": 2,
+    "}": 3,
+    ">": 4,
+}
+
 # Part 2
-"""
-score = 0
+score = []
 for line in lines:
-    #print(line)
-    o, s, l = parse(line)
-    if s == 0 and l:
-        print(l)
-    score += s
-print(score)
-"""
+    inc = p2(line)
+    if inc:
+        #print("".join(inc))
+        inc = list(inc)
+        s = 0
+        while inc:
+            c = inc.pop()
+            #print(c, s)
+            s *= 5
+            s += scores.get(m.get(c, 0), 0)
+        #print(s)
+        score.append(s)
+
+score = sorted(score)
+
+print(score[(len(score) - 1) // 2])
