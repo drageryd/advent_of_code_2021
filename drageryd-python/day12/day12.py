@@ -8,14 +8,14 @@ cave = {}
 for k,v in data:
     cave[k] = cave.get(k, ()) + (v,)
 
-def bfs(p2 = False):
-    # BFS through all paths
+def dfs(p2 = False):
+    # DFS through all paths
     # queue holds current path
     queue = [(("start",),False)]
     completed = []
     i = 0
     while queue:
-        path, twice = queue.pop(0)
+        path, twice = queue.pop()
         current_cave = path[-1]
         connected_caves = cave[current_cave]
         for c in connected_caves:
@@ -38,5 +38,5 @@ def bfs(p2 = False):
                 queue.append((new_path, new_twice))
     return len(completed)
 
-print(bfs())
-print(bfs(True))
+print(dfs())
+print(dfs(True))
